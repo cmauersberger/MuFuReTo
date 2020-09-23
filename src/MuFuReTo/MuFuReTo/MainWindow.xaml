@@ -1,0 +1,52 @@
+﻿<Window x:Class="MuFuReTo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MuFuReTo"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Column="0" Grid.Row="0" Margin="10 10 10 10">
+            <TextBlock DockPanel.Dock="Top">Hier kommen die controls hin.</TextBlock>
+        </DockPanel>
+
+        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+
+        <Grid Grid.Column="2" Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="60" />
+            </Grid.RowDefinitions>
+
+            <DockPanel Grid.Row="0" HorizontalAlignment="Stretch" Height="40" Margin="10 10 10 10">
+                <TextBlock DockPanel.Dock="Left" HorizontalAlignment="Stretch" VerticalAlignment="Center" Name="TxtFolder" Text="{Binding MainWindow.SelectedFolder}"></TextBlock>
+                <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Width="auto" Height="20" Padding="8 2 8 2" Name="BtnOpenFolder" Click="BtnOpenFolder_OnClick">Select Folder</Button>
+            </DockPanel>
+
+            <DataGrid Grid.Row="1" Name="dgImageFiles" AutoGenerateColumns="False" >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="OriginalFilename" Binding="{Binding OriginalFilename}" />
+                    <DataGridTextColumn Header="Size" Binding="{Binding FormattedFileSize}" SortMemberPath="FileSize" IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <DockPanel Grid.Row="2" HorizontalAlignment="Stretch" Height="40" Margin="10 10 10 10">
+                <TextBlock DockPanel.Dock="Left" HorizontalAlignment="Stretch" VerticalAlignment="Center">Some info...</TextBlock>
+                <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Width="auto" Height="20" Padding="8 2 8 2">Some functionality</Button>
+            </DockPanel>
+
+        </Grid>
+    </Grid>
+</Window>
