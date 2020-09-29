@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Forms;
 
 namespace MuFuReTo
@@ -9,14 +10,17 @@ namespace MuFuReTo
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    // ReSharper disable once RedundantExtendsListEntry
     public partial class MainWindow : Window
     {
-        public string SelectedFolder = null;
-        public List<ImageFile> ImageFiles = new List<ImageFile>();
+        public string SelectedFolder;
+        public ObservableCollection<ImageFile> ImageFiles = new ObservableCollection<ImageFile>();
 
         public MainWindow()
         {
             InitializeComponent();
+            var dgImageFilesDataSource = (CollectionViewSource)(FindResource("DgImageFilesDataSource"));
+            dgImageFilesDataSource.Source = ImageFiles;
 
         }
 
@@ -28,7 +32,6 @@ namespace MuFuReTo
             if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 TxtFolder.Text = SelectedFolder = folderBrowserDialog.SelectedPath;
-                //SelectedFolder = openFileDialog.FileName;
                 ReadAllFiles();
             }
         }
@@ -45,20 +48,22 @@ namespace MuFuReTo
                 return;
             }
 
-            var files = Directory.GetFiles(SelectedFolder);
-            var imageFiles = files.Select(file =>
+            var files = Directory.GetFiles(SelectedFolder).ToList();
+            ImageFiles.Clear();
+
+            files.ForEach(file =>
             {
                 var fileInfo = new FileInfo(file);
-                return new ImageFile
+                var imageFile = new ImageFile
                 {
                     Path = fileInfo.DirectoryName,
                     OriginalFilename = fileInfo.Name,
                     FileSize = fileInfo.Length
                 };
-            }).ToList();
 
-            ImageFiles = imageFiles;
-            dgImageFiles.ItemsSource = ImageFiles; // todo: make auto-binding
+                ImageFiles.Add(imageFile);
+            });
+
         }
     }
 }

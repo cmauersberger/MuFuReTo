@@ -6,6 +6,9 @@
         xmlns:local="clr-namespace:MuFuReTo"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <CollectionViewSource x:Key="DgImageFilesDataSource"  CollectionViewType="ListCollectionView"/>
+    </Window.Resources>
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -26,23 +29,26 @@
         <Grid Grid.Column="2" Grid.Row="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="60" />
-                <RowDefinition Height="1*" />
+                <RowDefinition Height="155*" />
+                <RowDefinition Height="159*"/>
                 <RowDefinition Height="60" />
             </Grid.RowDefinitions>
 
-            <DockPanel Grid.Row="0" HorizontalAlignment="Stretch" Height="40" Margin="10 10 10 10">
-                <TextBlock DockPanel.Dock="Left" HorizontalAlignment="Stretch" VerticalAlignment="Center" Name="TxtFolder" Text="{Binding MainWindow.SelectedFolder}"></TextBlock>
+            <DockPanel Grid.Row="0" Height="40" Margin="10,10,10,10">
+                <TextBlock DockPanel.Dock="Left" HorizontalAlignment="Stretch" VerticalAlignment="Center" Name="TxtFolder" Text="{Binding MainWindow.SelectedFolder}">Select a folder</TextBlock>
                 <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Width="auto" Height="20" Padding="8 2 8 2" Name="BtnOpenFolder" Click="BtnOpenFolder_OnClick">Select Folder</Button>
             </DockPanel>
 
-            <DataGrid Grid.Row="1" Name="dgImageFiles" AutoGenerateColumns="False" >
+            <DataGrid Grid.Row="1" Name="DgImageFiles" AutoGenerateColumns="False" CanUserAddRows="False" Grid.RowSpan="2" 
+                DataContext="{StaticResource DgImageFilesDataSource}"
+                ItemsSource="{Binding}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="OriginalFilename" Binding="{Binding OriginalFilename}" />
+                    <DataGridTextColumn Header="OriginalFilename" Binding="{Binding OriginalFilename}" IsReadOnly="True" />
                     <DataGridTextColumn Header="Size" Binding="{Binding FormattedFileSize}" SortMemberPath="FileSize" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </DataGrid>
 
-            <DockPanel Grid.Row="2" HorizontalAlignment="Stretch" Height="40" Margin="10 10 10 10">
+            <DockPanel Grid.Row="3" Height="40" Margin="10,10,10,10">
                 <TextBlock DockPanel.Dock="Left" HorizontalAlignment="Stretch" VerticalAlignment="Center">Some info...</TextBlock>
                 <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Width="auto" Height="20" Padding="8 2 8 2">Some functionality</Button>
             </DockPanel>
