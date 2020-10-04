@@ -14,7 +14,7 @@ namespace MuFuReTo
     public partial class MainWindow : Window
     {
         public string SelectedFolder;
-        public ObservableCollection<ImageFile> ImageFiles = new ObservableCollection<ImageFile>();
+        public ObservableCollection<ImageFileMetaData> ImageFiles = new ObservableCollection<ImageFileMetaData>();
 
         public MainWindow()
         {
@@ -54,7 +54,7 @@ namespace MuFuReTo
             files.ForEach(file =>
             {
                 var fileInfo = new FileInfo(file);
-                var imageFile = new ImageFile
+                var imageFile = new ImageFileMetaData
                 {
                     Path = fileInfo.DirectoryName,
                     OriginalFilename = fileInfo.Name,

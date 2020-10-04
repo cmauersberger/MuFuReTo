@@ -45,6 +45,8 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="OriginalFilename" Binding="{Binding OriginalFilename}" IsReadOnly="True" />
                     <DataGridTextColumn Header="Size" Binding="{Binding FormattedFileSize}" SortMemberPath="FileSize" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Model" Binding="{Binding CameraModel}" SortMemberPath="FileSize" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="ISO" Binding="{Binding IsoValue}" SortMemberPath="FileSize" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </DataGrid>
 

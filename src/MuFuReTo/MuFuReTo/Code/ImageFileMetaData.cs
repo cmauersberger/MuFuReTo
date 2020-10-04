@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-public class ImageFile
+public class ImageFileMetaData
 {
     public string Path { get; set; }
     public string OriginalFilename { get; set; }
@@ -9,6 +9,7 @@ public class ImageFile
     public string CameraModel { get; set; }
     public long FileSize { get; set; }
     public string NewFilenamePreview { get; set; }
+    public ushort IsoValue { get; set; }
 
     public string FormattedFileSize 
     {
