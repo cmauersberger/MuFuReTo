@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MuFuReTo"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="600" Width="1200">
     <Window.Resources>
         <CollectionViewSource x:Key="DgImageFilesDataSource"  CollectionViewType="ListCollectionView"/>
     </Window.Resources>
@@ -44,14 +44,21 @@
                 ItemsSource="{Binding}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="OriginalFilename" Binding="{Binding OriginalFilename}" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Size" Binding="{Binding FormattedFileSize}" SortMemberPath="FileSize" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Model" Binding="{Binding CameraModel}" SortMemberPath="FileSize" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="ISO" Binding="{Binding IsoValue}" SortMemberPath="FileSize" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Date taken" Binding="{Binding DateTakenFormatted}" SortMemberPath="DateTaken" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Size" Binding="{Binding FileSizeFormatted}" SortMemberPath="FileSize" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Model" Binding="{Binding CameraModel}" SortMemberPath="CameraModel" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Exposure" Binding="{Binding ExposureTime}" SortMemberPath="ExposureTime" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Aperture" Binding="{Binding Aperture}" SortMemberPath="Aperture" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="ISO" Binding="{Binding IsoValue}" SortMemberPath="IsoValue" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Focal length" Binding="{Binding FocalLength}" SortMemberPath="FocalLength" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Width (x)" Binding="{Binding Width}" SortMemberPath="Width" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Height (y)" Binding="{Binding Height}" SortMemberPath="Height" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Parsing Remarks" Binding="{Binding ParsingRemarks}" SortMemberPath="ParsingRemarks" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </DataGrid>
 
             <DockPanel Grid.Row="3" Height="40" Margin="10,10,10,10">
-                <TextBlock DockPanel.Dock="Left" HorizontalAlignment="Stretch" VerticalAlignment="Center">Some info...</TextBlock>
+                <TextBlock Name="TxtProgress" DockPanel.Dock="Left" HorizontalAlignment="Stretch" VerticalAlignment="Center">Some info...</TextBlock>
                 <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Width="auto" Height="20" Padding="8 2 8 2">Some functionality</Button>
             </DockPanel>
 

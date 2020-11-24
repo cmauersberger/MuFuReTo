@@ -3,19 +3,32 @@ using System.IO;
 
 public class ImageFileMetaData
 {
-    public string Path { get; set; }
+    public string FilePath { get; set; }
     public string OriginalFilename { get; set; }
-    public DateTime DateTaken { get; set; }
-    public string CameraModel { get; set; }
-    public long FileSize { get; set; }
     public string NewFilenamePreview { get; set; }
-    public ushort IsoValue { get; set; }
 
-    public string FormattedFileSize 
+    public long FileSize { get; set; }
+
+    public string DateTakenString { get; set; }
+    public DateTime? DateTaken { get; set; }
+    public string DateTakenFormatted => DateTaken.HasValue ? DateTaken.Value.ToString("yyyy-MM-dd HH:mm:ss") : $"- ({DateTakenString})";
+
+    public string CameraModel { get; set; }
+    public string Width { get; set; }
+    public string Height { get; set; }
+
+    public string IsoValue { get; set; }
+    public string ExposureTime { get; set; }
+    public string FocalLength { get; set; }
+    public string Aperture { get; set; }
+
+    public string ParsingRemarks { get; set; }
+
+    public string FileSizeFormatted
     {
         get
         {
-            var fullPath = Path + "\\" + OriginalFilename;
+            var fullPath = Path.Combine(FilePath, OriginalFilename);
             if (!File.Exists(fullPath))
             {
                 return "";
@@ -29,7 +42,6 @@ public class ImageFileMetaData
                 order++;
                 len /= 1024;
             }
-
             return $"{len:0.#} {sizes[order]}";
         }
     }
