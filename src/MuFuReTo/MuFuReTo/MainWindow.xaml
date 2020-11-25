@@ -59,7 +59,7 @@
 
             <DockPanel Grid.Row="3" Height="40" Margin="10,10,10,10">
                 <TextBlock Name="TxtProgress" DockPanel.Dock="Left" HorizontalAlignment="Stretch" VerticalAlignment="Center">Some info...</TextBlock>
-                <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Width="auto" Height="20" Padding="8 2 8 2">Some functionality</Button>
+                <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Width="auto" Height="20" Padding="8 2 8 2" Click="BtnSomeFunction_OnClick">Some functionality</Button>
             </DockPanel>
 
         </Grid>
