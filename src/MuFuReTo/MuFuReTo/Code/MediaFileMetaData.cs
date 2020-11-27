@@ -8,7 +8,8 @@ namespace MuFuReTo.Code
     {
         public string FilePath { get; set; }
         public string OriginalFilename { get; set; }
-        public string NewFilenamePreview { get; set; }
+        public string NewFilename { get; set; }
+        public bool NewFilenameIsUnique { get; set; }
 
         public long FileSize { get; set; }
 

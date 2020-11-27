@@ -8,6 +8,9 @@
         Title="MainWindow" Height="600" Width="1200">
     <Window.Resources>
         <CollectionViewSource x:Key="DgImageFilesDataSource"  CollectionViewType="ListCollectionView"/>
+        <Thickness x:Key="DefaultControlMargin" Left="0" Top="5" Right="0" Bottom="5" />
+        <!--<Sys:Int x:Key="DefaultControlPadding">5</Sys:Int>-->
+        <Thickness x:Key="DefaultControlPadding">5</Thickness>
     </Window.Resources>
     <Grid>
 
@@ -20,8 +23,13 @@
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
 
-        <DockPanel Grid.Column="0" Grid.Row="0" Margin="10 10 10 10">
-            <TextBlock DockPanel.Dock="Top">Hier kommen die controls hin.</TextBlock>
+        <DockPanel Name="LeftPanelGrid" Grid.Column="0" Grid.Row="0" Margin="10 10 10 10">
+            <TextBlock DockPanel.Dock="Top" Margin="{StaticResource DefaultControlMargin}">Hier kommen die controls hin.</TextBlock>
+            <TextBox Name="TxtRenamingScheme" DockPanel.Dock="Top" Text="%Y-%M-%D__%C" Margin="{StaticResource DefaultControlMargin}" Padding="{StaticResource DefaultControlPadding}" />
+            <TextBlock Text="{Binding Path=Text, ElementName=TxtRenamingScheme}" DockPanel.Dock="Top" Margin="{StaticResource DefaultControlMargin}" />
+            <TextBlock Text="%Y-%M-%D__%C %F1" DockPanel.Dock="Top" Margin="{StaticResource DefaultControlMargin}" />
+            <CheckBox Name="CbIncludeFilesWithoutDate">Include files without date</CheckBox>
+            <Button DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="{StaticResource DefaultControlMargin}" Width="auto" Height="30" Padding="8 4 8 4" Name="BtnApplyNamingScheme" Click="BtnApplyNamingScheme_OnClick">Apply naming</Button>
         </DockPanel>
 
         <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
@@ -44,6 +52,20 @@
                 ItemsSource="{Binding}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="OriginalFilename" Binding="{Binding OriginalFilename}" IsReadOnly="True" />
+                    <DataGridTextColumn Header="NewFilename" Binding="{Binding NewFilename}"  IsReadOnly="False">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding NewFilenameIsUnique}" Value="False">
+                                        <Setter Property="Background" Value="Red" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                        <!--<Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Background" Value="{Binding Path=NewFilenameIsUnique,Converter={StaticResource converter}}"/>
+                        </Style>-->
+                    </DataGridTextColumn>
                     <DataGridTextColumn Header="Date taken" Binding="{Binding DateTakenFormatted}" SortMemberPath="DateTaken" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Size" Binding="{Binding FileSizeFormatted}" SortMemberPath="FileSize" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Model" Binding="{Binding CameraModel}" SortMemberPath="CameraModel" IsReadOnly="True"/>

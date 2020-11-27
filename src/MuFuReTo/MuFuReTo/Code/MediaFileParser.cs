@@ -58,7 +58,7 @@ namespace MuFuReTo.Code
                 result.Add(metaData);
             }
 
-            return result;
+            return result.OrderBy(mf => mf.DateTaken ?? new DateTime()).ToList();
         }
 
         private void ParseJpgMetaData(string filename, MediaFileMetaData metaData)
