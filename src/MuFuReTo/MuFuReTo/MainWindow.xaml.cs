@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Forms;
 using MuFuReTo.Code;
@@ -52,10 +52,29 @@ namespace MuFuReTo
         private void BtnApplyNamingScheme_OnClick(object sender, RoutedEventArgs e)
         {
             TxtProgress.Text = TxtRenamingScheme.Text;
-            var imageFiles = ImageFiles.ToList();
-            Renaming.ApplyNamingTemplate(TxtRenamingScheme.Text, imageFiles);
+            var mediaFiles = ImageFiles.ToList();
+            Renaming.ApplyNamingTemplate(TxtRenamingScheme.Text, mediaFiles);
             ImageFiles.Clear();
-            imageFiles.ForEach(ImageFiles.Add);
+            mediaFiles.ForEach(ImageFiles.Add);
+        }
+
+        private void BtnExecuteRenaming_OnClick(object sender, RoutedEventArgs e)
+        {
+            // search for iterating over observable list
+            //foreach (var mediaFileMetaData in ImageFiles)
+            //{
+
+            //}
+            var imageFiles = ImageFiles.ToList();
+            foreach (var mediaFile in imageFiles)
+            {
+                var oldPath = Path.Combine(mediaFile.FilePath, mediaFile.OriginalFilename);
+                var newPath = Path.Combine(mediaFile.FilePath, mediaFile.NewFilename);
+                var originalFilename = mediaFile.OriginalFilename;
+                mediaFile.OriginalFilename = mediaFile.NewFilename;
+                mediaFile.NewFilename = originalFilename;
+                System.IO.File.Move(oldPath, newPath);
+            }
         }
 
         private void BtnSomeFunction_OnClick(object sender, RoutedEventArgs e)

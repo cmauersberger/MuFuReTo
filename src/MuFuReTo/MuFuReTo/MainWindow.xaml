@@ -28,8 +28,9 @@
             <TextBox Name="TxtRenamingScheme" DockPanel.Dock="Top" Text="%Y-%M-%D__%C" Margin="{StaticResource DefaultControlMargin}" Padding="{StaticResource DefaultControlPadding}" />
             <TextBlock Text="{Binding Path=Text, ElementName=TxtRenamingScheme}" DockPanel.Dock="Top" Margin="{StaticResource DefaultControlMargin}" />
             <TextBlock Text="%Y-%M-%D__%C %F1" DockPanel.Dock="Top" Margin="{StaticResource DefaultControlMargin}" />
-            <CheckBox Name="CbIncludeFilesWithoutDate">Include files without date</CheckBox>
+            <CheckBox DockPanel.Dock="Top" Name="CbIncludeFilesWithoutDate">Include files without date</CheckBox>
             <Button DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="{StaticResource DefaultControlMargin}" Width="auto" Height="30" Padding="8 4 8 4" Name="BtnApplyNamingScheme" Click="BtnApplyNamingScheme_OnClick">Apply naming</Button>
+            <Button DockPanel.Dock="Bottom" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="{StaticResource DefaultControlMargin}" Width="auto" Height="30" Padding="8 4 8 4" Name="BtnExecuteRenaming" Click="BtnExecuteRenaming_OnClick">Execute Renaming</Button>
         </DockPanel>
 
         <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />

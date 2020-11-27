@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace MuFuReTo.Code
@@ -24,7 +25,8 @@ namespace MuFuReTo.Code
                 }
 
                 newFilename = newFilename.Replace("%C", counter.ToString().PadLeft(counterDigits, '0'));
-                mediaFile.NewFilename = newFilename;
+                var extension = Path.GetExtension(mediaFile.OriginalFilename).ToLowerInvariant();
+                mediaFile.NewFilename = Path.ChangeExtension(newFilename, extension);
                 counter++;
             }
             CheckForUniqueness(mediaFiles);
