@@ -30,24 +30,23 @@ namespace MuFuReTo.Code
                 {
                     var fileInfo = new FileInfo(file);
                     metaData.FilePath = fileInfo.DirectoryName;
-                    metaData.OriginalFilename = fileInfo.Name;
+                    metaData.CurrentFilename = fileInfo.Name;
                     metaData.FileSize = fileInfo.Length;
 
-                    var isJpg = file.EndsWith("jpg", StringComparison.OrdinalIgnoreCase) ||
-                                file.EndsWith("jpeg", StringComparison.OrdinalIgnoreCase);
+                    metaData.FileType = GetFileType(file);
 
-                    if (isJpg)
+                    switch (metaData.FileType)
                     {
-                        ParseJpgMetaData(file, metaData);
+                        case FileTypeEnum.Jpg:
+                            ParseJpgMetaData(file, metaData);
+                            break;
+                        case FileTypeEnum.Mp4:
+                            ParseMp4MetaData(file, metaData);
+                            break;
+                        case FileTypeEnum.Undefined:
+                            metaData.Selected = false;
+                            break;
                     }
-
-                    var isMp4 = !isJpg && file.EndsWith("mp4", StringComparison.OrdinalIgnoreCase);
-                    if (isMp4)
-                    {
-                        ParseMp4MetaData(file, metaData);
-                    }
-
-                    // todo: add getFileFormat with custom enum, default: add Parsing Remark
                 }
                 catch (Exception e)
                 {
@@ -59,6 +58,26 @@ namespace MuFuReTo.Code
             }
 
             return result.OrderBy(mf => mf.DateTaken ?? new DateTime()).ToList();
+        }
+
+        private FileTypeEnum GetFileType(string filename)
+        {
+            var isJpg = filename.EndsWith("jpg", StringComparison.OrdinalIgnoreCase) ||
+                        filename.EndsWith("jpeg", StringComparison.OrdinalIgnoreCase);
+
+            if (isJpg)
+            {
+                return FileTypeEnum.Jpg;
+            }
+
+            var isMp4 = filename.EndsWith("mp4", StringComparison.OrdinalIgnoreCase);
+
+            if (isMp4)
+            {
+                return FileTypeEnum.Mp4;
+            }
+
+            return FileTypeEnum.Undefined;
         }
 
         private void ParseJpgMetaData(string filename, MediaFileMetaData metaData)

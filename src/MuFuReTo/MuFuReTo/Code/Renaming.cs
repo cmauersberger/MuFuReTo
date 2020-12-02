@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
@@ -7,15 +7,23 @@ namespace MuFuReTo.Code
 {
     public class Renaming
     {
-        public void ApplyNamingTemplate(string template, List<MediaFileMetaData> mediaFiles)
+        public void ApplyNamingTemplate(string template, ObservableCollection<MediaFileMetaData> mediaFiles)
         {
             var counter = 1;
             var currentDate = new DateTime();
             var counterDigits = 2;
+
             foreach (var mediaFile in mediaFiles)
             {
+                if (!mediaFile.Selected)
+                {
+                    continue;
+                }
+
                 mediaFile.NewFilenameIsUnique = true;
                 var newFilename = ReplaceDateFields(template, mediaFile);
+                newFilename = ReplaceCustomFields(newFilename, mediaFile);
+
                 if (mediaFile.DateTaken.HasValue && mediaFile.DateTaken.Value.Date > currentDate.Date)
                 {
                     currentDate = mediaFile.DateTaken.Value.Date;
@@ -25,14 +33,16 @@ namespace MuFuReTo.Code
                 }
 
                 newFilename = newFilename.Replace("%C", counter.ToString().PadLeft(counterDigits, '0'));
-                var extension = Path.GetExtension(mediaFile.OriginalFilename).ToLowerInvariant();
+                newFilename = newFilename.Trim();
+                var extension = Path.GetExtension(mediaFile.CurrentFilename).ToLowerInvariant();
                 mediaFile.NewFilename = Path.ChangeExtension(newFilename, extension);
                 counter++;
             }
+
             CheckForUniqueness(mediaFiles);
         }
 
-        private void CheckForUniqueness(List<MediaFileMetaData> mediaFiles)
+        private void CheckForUniqueness(ObservableCollection<MediaFileMetaData> mediaFiles)
         {
             var groupedByName = mediaFiles.GroupBy(mf => mf.NewFilename).Where(g => g.Count() > 1);
             groupedByName.ToList().ForEach(group =>
@@ -52,9 +62,21 @@ namespace MuFuReTo.Code
 
             if (template.Contains("%M"))
             {
-                newFilename = newFilename.Replace("%M", mediaFile.DateTaken?.Month.ToString().PadLeft(2, '0' ));
+                newFilename = newFilename.Replace("%M", mediaFile.DateTaken?.Month.ToString().PadLeft(2, '0'));
             }
             newFilename = newFilename.Replace("%D", mediaFile.DateTaken?.Day.ToString().PadLeft(2, '0'));
+
+            return newFilename;
+        }
+
+        private string ReplaceCustomFields(string template, MediaFileMetaData mediaFile)
+        {
+            var newFilename = template;
+
+            if (template.Contains("%F1"))
+            {
+                newFilename = newFilename.Replace("%F1", mediaFile.CustomField1);
+            }
 
             return newFilename;
         }

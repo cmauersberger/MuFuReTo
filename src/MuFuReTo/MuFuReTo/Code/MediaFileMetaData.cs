@@ -6,13 +6,16 @@ namespace MuFuReTo.Code
 
     public class MediaFileMetaData
     {
+        public bool Selected { get; set; } = true;
         public string FilePath { get; set; }
-        public string OriginalFilename { get; set; }
+        public string CurrentFilename { get; set; }
         public string NewFilename { get; set; }
         public bool NewFilenameIsUnique { get; set; }
+        public string CustomField1 { get; set; }
 
         public long FileSize { get; set; }
-
+        public FileTypeEnum FileType { get; set; }
+        public string FileTypeFormatted => FileType.ToString();
         public string DateTakenString { get; set; }
         public DateTime? DateTaken { get; set; }
 
@@ -35,7 +38,7 @@ namespace MuFuReTo.Code
         {
             get
             {
-                var fullPath = Path.Combine(FilePath, OriginalFilename);
+                var fullPath = Path.Combine(FilePath, CurrentFilename);
                 if (!File.Exists(fullPath))
                 {
                     return "";

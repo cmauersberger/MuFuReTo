@@ -8,7 +8,7 @@
         Title="MainWindow" Height="600" Width="1200">
     <Window.Resources>
         <CollectionViewSource x:Key="DgImageFilesDataSource"  CollectionViewType="ListCollectionView"/>
-        <Thickness x:Key="DefaultControlMargin" Left="0" Top="5" Right="0" Bottom="5" />
+        <Thickness x:Key="DefaultControlMargin" Left="16" Top="8" Right="16" Bottom="8" />
         <!--<Sys:Int x:Key="DefaultControlPadding">5</Sys:Int>-->
         <Thickness x:Key="DefaultControlPadding">5</Thickness>
     </Window.Resources>
@@ -30,17 +30,17 @@
             <TextBlock Text="%Y-%M-%D__%C %F1" DockPanel.Dock="Top" Margin="{StaticResource DefaultControlMargin}" />
             <CheckBox DockPanel.Dock="Top" Name="CbIncludeFilesWithoutDate">Include files without date</CheckBox>
             <Button DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="{StaticResource DefaultControlMargin}" Width="auto" Height="30" Padding="8 4 8 4" Name="BtnApplyNamingScheme" Click="BtnApplyNamingScheme_OnClick">Apply naming</Button>
-            <Button DockPanel.Dock="Bottom" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="{StaticResource DefaultControlMargin}" Width="auto" Height="30" Padding="8 4 8 4" Name="BtnExecuteRenaming" Click="BtnExecuteRenaming_OnClick">Execute Renaming</Button>
+            <Image Name="ImgPreview" Margin="10" Stretch="Uniform" MaxHeight="300" />
         </DockPanel>
 
         <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
 
-        <Grid Grid.Column="2" Grid.Row="0">
+        <Grid Grid.Column="2" Grid.Row="0" DataContext="MainWindow">
             <Grid.RowDefinitions>
                 <RowDefinition Height="60" />
                 <RowDefinition Height="155*" />
                 <RowDefinition Height="159*"/>
-                <RowDefinition Height="60" />
+                <RowDefinition Height="80" />
             </Grid.RowDefinitions>
 
             <DockPanel Grid.Row="0" Height="40" Margin="10,10,10,10">
@@ -52,7 +52,8 @@
                 DataContext="{StaticResource DgImageFilesDataSource}"
                 ItemsSource="{Binding}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="OriginalFilename" Binding="{Binding OriginalFilename}" IsReadOnly="True" />
+                    <DataGridCheckBoxColumn Header="-" Binding="{Binding Selected}"/>
+                    <DataGridTextColumn Header="Filename" Binding="{Binding CurrentFilename}" IsReadOnly="True" />
                     <DataGridTextColumn Header="NewFilename" Binding="{Binding NewFilename}"  IsReadOnly="False">
                         <DataGridTextColumn.CellStyle>
                             <Style TargetType="{x:Type DataGridCell}">
@@ -67,6 +68,7 @@
                             <Setter Property="Background" Value="{Binding Path=NewFilenameIsUnique,Converter={StaticResource converter}}"/>
                         </Style>-->
                     </DataGridTextColumn>
+                    <DataGridTextColumn Header="Custom %F1" Binding="{Binding CustomField1}" />
                     <DataGridTextColumn Header="Date taken" Binding="{Binding DateTakenFormatted}" SortMemberPath="DateTaken" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Size" Binding="{Binding FileSizeFormatted}" SortMemberPath="FileSize" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Model" Binding="{Binding CameraModel}" SortMemberPath="CameraModel" IsReadOnly="True"/>
@@ -76,13 +78,16 @@
                     <DataGridTextColumn Header="Focal length" Binding="{Binding FocalLength}" SortMemberPath="FocalLength" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Width (x)" Binding="{Binding Width}" SortMemberPath="Width" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Height (y)" Binding="{Binding Height}" SortMemberPath="Height" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Type" Binding="{Binding FileType}" SortMemberPath="FileType" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Parsing Remarks" Binding="{Binding ParsingRemarks}" SortMemberPath="ParsingRemarks" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </DataGrid>
 
-            <DockPanel Grid.Row="3" Height="40" Margin="10,10,10,10">
-                <TextBlock Name="TxtProgress" DockPanel.Dock="Left" HorizontalAlignment="Stretch" VerticalAlignment="Center">Some info...</TextBlock>
-                <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Width="auto" Height="20" Padding="8 2 8 2" Click="BtnSomeFunction_OnClick">Some functionality</Button>
+            <DockPanel Grid.Row="3" Height="60" Margin="10,10,10,10">
+                <Button DockPanel.Dock="Left" HorizontalAlignment="Right" Width="auto" Height="30" Margin="{StaticResource DefaultControlMargin}" Padding="8 4 8 4" Click="BtnShowPreview_OnClick">Preview</Button>
+                <TextBox DockPanel.Dock="Left" Name="TxtFillCustomField1" Width="200" Height="30" Text="" Margin="{StaticResource DefaultControlMargin}" Padding="{StaticResource DefaultControlPadding}" />
+                <Button DockPanel.Dock="Left" HorizontalAlignment="Right" Width="auto" Height="30" Margin="{StaticResource DefaultControlMargin}" Padding="8 4 8 4" Click="BtnCopyF1ToSelected_OnClick">Copy %F1 to selected</Button>
+                <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Width="auto" Height="30" Margin="{StaticResource DefaultControlMargin}" Padding="8 4 8 4" Click="BtnExecuteRenaming_OnClick">Some functionality</Button>
             </DockPanel>
 
         </Grid>
