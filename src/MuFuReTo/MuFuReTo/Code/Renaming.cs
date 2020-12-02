@@ -15,7 +15,7 @@ namespace MuFuReTo.Code
 
             foreach (var mediaFile in mediaFiles)
             {
-                if (!mediaFile.Selected)
+                if (!mediaFile.ExcludeFromRenaming)
                 {
                     continue;
                 }

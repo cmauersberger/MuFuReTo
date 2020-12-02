@@ -44,7 +44,7 @@ namespace MuFuReTo.Code
                             ParseMp4MetaData(file, metaData);
                             break;
                         case FileTypeEnum.Undefined:
-                            metaData.Selected = false;
+                            metaData.ExcludeFromRenaming = false;
                             break;
                     }
                 }

@@ -2,10 +2,15 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using MuFuReTo.Code;
+
+// todo: set exif author from custom field
+// todo: set exif date from filename/date picker
 
 namespace MuFuReTo
 {
@@ -61,6 +66,10 @@ namespace MuFuReTo
         {
             foreach (var mediaFile in ImageFiles)
             {
+                if (mediaFile.ExcludeFromRenaming)
+                {
+                    continue;
+                }
                 var oldPath = Path.Combine(mediaFile.FilePath, mediaFile.CurrentFilename);
                 var newPath = Path.Combine(mediaFile.FilePath, mediaFile.NewFilename);
                 var originalFilename = mediaFile.CurrentFilename;
@@ -73,23 +82,25 @@ namespace MuFuReTo
 
         private void BtnShowPreview_OnClick(object sender, RoutedEventArgs e)
         {
-            var image = (MediaFileMetaData)DgImageFiles.SelectedItem;
+            var mediaFile = (MediaFileMetaData)DgImageFiles.SelectedItem;
 
-            if (image == null)
+            if (mediaFile == null)
             {
+                ImgPreview.Source = null;
                 return;
             }
 
             try
             {
-                var path = Path.Combine(image.FilePath, image.CurrentFilename);
-                Uri fileUri = new Uri(path);
+                var path = Path.Combine(mediaFile.FilePath, mediaFile.CurrentFilename);
+                var fileUri = new Uri(path);
                 ImgPreview.Source = new BitmapImage(fileUri);
 
             }
             catch
             {
-                // ignored
+                ImgPreview.Source = null;
+
             }
         }
 
@@ -103,12 +114,47 @@ namespace MuFuReTo
             }
 
             var sourceString = TxtFillCustomField1.Text;
+
             foreach (var mediaFile in mediaFiles)
             {
                 ((MediaFileMetaData) mediaFile).CustomField1 = sourceString;
             }
 
             DgImageFiles.Items.Refresh();
+        }
+
+        private void DataGridCell_Selected(object sender, RoutedEventArgs e)
+        {
+            if (e.OriginalSource.GetType() != typeof(DataGridCell))
+            {
+                return;
+            }
+
+            DataGrid grd = (DataGrid)sender;
+            grd.BeginEdit(e);
+
+            var mediaFile = (MediaFileMetaData)grd.CurrentItem;
+            if (mediaFile == null || mediaFile.FileType != FileTypeEnum.Jpg)
+            {
+                ImgPreview.Source = null;
+                return;
+            }
+            try
+            {
+                var x = Path.GetFileName(ImgPreview.Source?.ToString());
+                if (mediaFile.CurrentFilename == Path.GetFileName(ImgPreview.Source?.ToString()))
+                {
+                    return;
+                }
+                var path = Path.Combine(mediaFile.FilePath, mediaFile.CurrentFilename);
+                Uri fileUri = new Uri(path);
+                ImgPreview.Source = new BitmapImage(fileUri);
+
+            }
+            catch
+            {
+                ImgPreview.Source = null;
+            }
         }
     }
 }

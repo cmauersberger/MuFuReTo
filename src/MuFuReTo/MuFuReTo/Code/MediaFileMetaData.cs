@@ -6,7 +6,7 @@ namespace MuFuReTo.Code
 
     public class MediaFileMetaData
     {
-        public bool Selected { get; set; } = true;
+        public bool ExcludeFromRenaming { get; set; } = true;
         public string FilePath { get; set; }
         public string CurrentFilename { get; set; }
         public string NewFilename { get; set; }

@@ -50,9 +50,10 @@
 
             <DataGrid Grid.Row="1" Name="DgImageFiles" AutoGenerateColumns="False" CanUserAddRows="False" Grid.RowSpan="2" 
                 DataContext="{StaticResource DgImageFilesDataSource}"
-                ItemsSource="{Binding}">
+                ItemsSource="{Binding}"
+                DataGridCell.Selected="DataGridCell_Selected" >
                 <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Header="-" Binding="{Binding Selected}"/>
+                    <DataGridCheckBoxColumn Header="-" Binding="{Binding ExcludeFromRenaming}"/>
                     <DataGridTextColumn Header="Filename" Binding="{Binding CurrentFilename}" IsReadOnly="True" />
                     <DataGridTextColumn Header="NewFilename" Binding="{Binding NewFilename}"  IsReadOnly="False">
                         <DataGridTextColumn.CellStyle>
@@ -84,7 +85,6 @@
             </DataGrid>
 
             <DockPanel Grid.Row="3" Height="60" Margin="10,10,10,10">
-                <Button DockPanel.Dock="Left" HorizontalAlignment="Right" Width="auto" Height="30" Margin="{StaticResource DefaultControlMargin}" Padding="8 4 8 4" Click="BtnShowPreview_OnClick">Preview</Button>
                 <TextBox DockPanel.Dock="Left" Name="TxtFillCustomField1" Width="200" Height="30" Text="" Margin="{StaticResource DefaultControlMargin}" Padding="{StaticResource DefaultControlPadding}" />
                 <Button DockPanel.Dock="Left" HorizontalAlignment="Right" Width="auto" Height="30" Margin="{StaticResource DefaultControlMargin}" Padding="8 4 8 4" Click="BtnCopyF1ToSelected_OnClick">Copy %F1 to selected</Button>
                 <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Width="auto" Height="30" Margin="{StaticResource DefaultControlMargin}" Padding="8 4 8 4" Click="BtnExecuteRenaming_OnClick">Some functionality</Button>
