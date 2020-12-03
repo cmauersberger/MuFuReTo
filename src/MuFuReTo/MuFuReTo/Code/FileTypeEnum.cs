@@ -4,6 +4,7 @@
     {
         Undefined = 0,
         Jpg = 1,
-        Mp4 = 5
+        Mp4 = 5,
+        Mov = 6
     }
 }

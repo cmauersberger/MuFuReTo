@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Forms;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using ExifLibrary;
 using MuFuReTo.Code;
 
 // todo: set exif author from custom field
@@ -46,7 +48,6 @@ namespace MuFuReTo
         {
             var folderBrowserDialog = new FolderBrowserDialog();
 
-
             if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 TxtFolder.Text = SelectedFolder = folderBrowserDialog.SelectedPath;
@@ -66,7 +67,7 @@ namespace MuFuReTo
         {
             foreach (var mediaFile in ImageFiles)
             {
-                if (mediaFile.ExcludeFromRenaming)
+                if (!mediaFile.IncludeInRenaming)
                 {
                     continue;
                 }
@@ -78,30 +79,6 @@ namespace MuFuReTo
                 File.Move(oldPath, newPath);
             }
             DgImageFiles.Items.Refresh();
-        }
-
-        private void BtnShowPreview_OnClick(object sender, RoutedEventArgs e)
-        {
-            var mediaFile = (MediaFileMetaData)DgImageFiles.SelectedItem;
-
-            if (mediaFile == null)
-            {
-                ImgPreview.Source = null;
-                return;
-            }
-
-            try
-            {
-                var path = Path.Combine(mediaFile.FilePath, mediaFile.CurrentFilename);
-                var fileUri = new Uri(path);
-                ImgPreview.Source = new BitmapImage(fileUri);
-
-            }
-            catch
-            {
-                ImgPreview.Source = null;
-
-            }
         }
 
         private void BtnCopyF1ToSelected_OnClick(object sender, RoutedEventArgs e)
@@ -125,6 +102,12 @@ namespace MuFuReTo
 
         private void DataGridCell_Selected(object sender, RoutedEventArgs e)
         {
+            if (!CbShowPreview.IsChecked.HasValue || !CbShowPreview.IsChecked.Value)
+            {
+                ImgPreview.Source = null;
+                return;
+            }
+
             if (e.OriginalSource.GetType() != typeof(DataGridCell))
             {
                 return;
@@ -141,20 +124,90 @@ namespace MuFuReTo
             }
             try
             {
-                var x = Path.GetFileName(ImgPreview.Source?.ToString());
                 if (mediaFile.CurrentFilename == Path.GetFileName(ImgPreview.Source?.ToString()))
                 {
                     return;
                 }
+
                 var path = Path.Combine(mediaFile.FilePath, mediaFile.CurrentFilename);
-                Uri fileUri = new Uri(path);
-                ImgPreview.Source = new BitmapImage(fileUri);
+                // open image as stream, so it is not locket. 
+                BitmapImage bi = new BitmapImage();
+                bi.BeginInit();
+                bi.UriSource = new Uri(path);
+                bi.CacheOption = BitmapCacheOption.OnLoad; // This does the trick.
+                bi.EndInit();
+                ImgPreview.Source = bi;
 
             }
             catch
             {
                 ImgPreview.Source = null;
             }
+        }
+
+        private void BtnCopyCopyrightToSelected_OnClick(object sender, RoutedEventArgs e)
+        {
+            var mediaFiles = DgImageFiles.SelectedItems;
+
+            if (mediaFiles.Count < 1)
+            {
+                return;
+            }
+
+            var copyright = TxtFillCopyright.Text;
+
+            foreach (var mediaFileObject in mediaFiles)
+            {
+                var mediaFile = (MediaFileMetaData)mediaFileObject;
+
+                if (mediaFile.FileType != FileTypeEnum.Jpg)
+                {
+                    continue;
+                }
+
+                // https://github.com/oozcitak/exiflibrary (writing exif data)
+                var fullPath = Path.Combine(mediaFile.FilePath, mediaFile.CurrentFilename);
+                var file = ImageFile.FromFile(fullPath);
+                file.Properties.Set(ExifTag.Copyright, copyright);
+                mediaFile.Copyright = copyright;
+                file.Save(fullPath);
+            }
+
+            DgImageFiles.Items.Refresh();
+        }
+
+        private void BtnCopyDateTakenToSelected_OnClick(object sender, RoutedEventArgs e)
+        {
+            var mediaFiles = DgImageFiles.SelectedItems;
+
+            if (mediaFiles.Count < 1)
+            {
+                return;
+            }
+
+            // Example: "2020:05:12 12:24:59"
+            var dateTakenString = TxtFillDateTaken.Text;
+            var dateTaken = DateTime.ParseExact(dateTakenString, "yyyy:MM:dd HH:mm:ss", CultureInfo.InvariantCulture);
+
+            foreach (var mediaFileObject in mediaFiles)
+            {
+                // https://github.com/oozcitak/exiflibrary (writing exif data)
+                var mediaFile = (MediaFileMetaData)mediaFileObject;
+
+                if (mediaFile.FileType != FileTypeEnum.Jpg)
+                {
+                    continue;
+                }
+
+                var fullPath = Path.Combine(mediaFile.FilePath, mediaFile.CurrentFilename);
+                var file = ImageFile.FromFile(fullPath);
+                file.Properties.Set(ExifTag.DateTimeOriginal, dateTaken);
+                mediaFile.DateTakenString = dateTakenString;
+                mediaFile.DateTaken = dateTaken;
+                file.Save(fullPath);
+            }
+
+            DgImageFiles.Items.Refresh();
         }
     }
 }

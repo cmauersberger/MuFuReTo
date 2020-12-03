@@ -44,7 +44,7 @@ namespace MuFuReTo.Code
                             ParseMp4MetaData(file, metaData);
                             break;
                         case FileTypeEnum.Undefined:
-                            metaData.ExcludeFromRenaming = false;
+                            metaData.IncludeInRenaming = false;
                             break;
                     }
                 }
@@ -82,10 +82,12 @@ namespace MuFuReTo.Code
 
         private void ParseJpgMetaData(string filename, MediaFileMetaData metaData)
         {
+            // https://github.com/drewnoakes/metadata-extractor-images/blob/master/jpg/metadata/dotnet/FujiFilm%20X10.jpg.txt
             var metadataExtractorDirectories = ImageMetadataReader.ReadMetadata(filename); // very fast!
 
             var exifIfd0Directory = metadataExtractorDirectories.OfType<ExifIfd0Directory>().FirstOrDefault();
             var cameraModel = exifIfd0Directory?.GetDescription(ExifDirectoryBase.TagModel);
+            var copyright = exifIfd0Directory?.GetDescription(ExifDirectoryBase.TagCopyright)?.Trim();
 
             var subIfdDirectory = metadataExtractorDirectories.OfType<ExifSubIfdDirectory>().FirstOrDefault(); // contains image related data
             var exposureTime = subIfdDirectory?.GetDescription(ExifDirectoryBase.TagExposureTime);
@@ -96,6 +98,7 @@ namespace MuFuReTo.Code
             var widthInPixel = subIfdDirectory?.GetDescription(ExifDirectoryBase.TagExifImageWidth);
             var heightInPixel = subIfdDirectory?.GetDescription(ExifDirectoryBase.TagExifImageHeight);
 
+            metaData.Copyright = copyright;
             metaData.CameraModel = cameraModel;
             metaData.Width = widthInPixel;
             metaData.Height = heightInPixel;

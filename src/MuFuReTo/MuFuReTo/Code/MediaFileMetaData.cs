@@ -6,7 +6,7 @@ namespace MuFuReTo.Code
 
     public class MediaFileMetaData
     {
-        public bool ExcludeFromRenaming { get; set; } = true;
+        public bool IncludeInRenaming { get; set; } = true;
         public string FilePath { get; set; }
         public string CurrentFilename { get; set; }
         public string NewFilename { get; set; }
@@ -23,6 +23,7 @@ namespace MuFuReTo.Code
             ? DateTaken.Value.ToString("yyyy-MM-dd HH:mm:ss")
             : $"- ({DateTakenString})";
 
+        public string Copyright { get; set; }
         public string CameraModel { get; set; }
         public string Width { get; set; }
         public string Height { get; set; }

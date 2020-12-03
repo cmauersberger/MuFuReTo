@@ -15,7 +15,7 @@ namespace MuFuReTo.Code
 
             foreach (var mediaFile in mediaFiles)
             {
-                if (!mediaFile.ExcludeFromRenaming)
+                if (!mediaFile.IncludeInRenaming)
                 {
                     continue;
                 }
@@ -76,6 +76,12 @@ namespace MuFuReTo.Code
             if (template.Contains("%F1"))
             {
                 newFilename = newFilename.Replace("%F1", mediaFile.CustomField1);
+            }
+
+            if (template.Contains("%V"))
+            {
+                var isVideo = mediaFile.FileType == FileTypeEnum.Mp4 || mediaFile.FileType == FileTypeEnum.Mov;
+                newFilename = newFilename.Replace("%V", isVideo ? "v" : "");
             }
 
             return newFilename;
