@@ -8,7 +8,8 @@
         Title="MainWindow" Height="600" Width="1400">
     <Window.Resources>
         <CollectionViewSource x:Key="DgImageFilesDataSource"  CollectionViewType="ListCollectionView"/>
-        <Thickness x:Key="DefaultControlMargin" Left="16" Top="8" Right="16" Bottom="8" />
+        <Thickness x:Key="DefaultSingleControlMargin" Left="16" Top="8" Right="16" Bottom="8" />
+        <Thickness x:Key="DefaultNotLastControlMargin" Left="16" Top="8" Right="0" Bottom="8" />
         <!--<Sys:Int x:Key="DefaultControlPadding">5</Sys:Int>-->
         <Thickness x:Key="DefaultControlPadding">5</Thickness>
     </Window.Resources>
@@ -24,12 +25,12 @@
         </Grid.RowDefinitions>
 
         <DockPanel Name="LeftPanelGrid" Grid.Column="0" Grid.Row="0" Margin="10 10 10 10">
-            <TextBlock DockPanel.Dock="Top" Margin="{StaticResource DefaultControlMargin}">Hier kommen die controls hin.</TextBlock>
-            <TextBox Name="TxtRenamingScheme" DockPanel.Dock="Top" Text="%Y-%M-%D__%C%V" Margin="{StaticResource DefaultControlMargin}" Padding="{StaticResource DefaultControlPadding}" />
-            <TextBlock Text="{Binding Path=Text, ElementName=TxtRenamingScheme}" DockPanel.Dock="Top" Margin="{StaticResource DefaultControlMargin}" />
-            <TextBlock Text="%Y-%M-%D__%C %F1" DockPanel.Dock="Top" Margin="{StaticResource DefaultControlMargin}" />
+            <TextBlock DockPanel.Dock="Top" Margin="{StaticResource DefaultSingleControlMargin}">Renaming template:</TextBlock>
+            <TextBox Name="TxtRenamingScheme" DockPanel.Dock="Top" Text="%Y-%M-%D__%C%V" Margin="{StaticResource DefaultSingleControlMargin}" Padding="{StaticResource DefaultControlPadding}" />
+            <!--<TextBlock Text="{Binding Path=Text, ElementName=TxtRenamingScheme}" DockPanel.Dock="Top" Margin="{StaticResource DefaultSingleControlMargin}" />-->
+            <TextBlock Text="%Y-%M-%D__%C%V %F1" DockPanel.Dock="Top" Margin="{StaticResource DefaultSingleControlMargin}" />
             <CheckBox DockPanel.Dock="Top" Name="CbIncludeFilesWithoutDate">Include files without date</CheckBox>
-            <Button DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="{StaticResource DefaultControlMargin}" Width="auto" Height="30" Padding="8 4 8 4" Name="BtnApplyNamingScheme" Click="BtnApplyNamingScheme_OnClick">Apply naming</Button>
+            <Button DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="{StaticResource DefaultSingleControlMargin}" Width="auto" Height="30" Padding="8 4 8 4" Name="BtnApplyNamingScheme" Click="BtnApplyNamingScheme_OnClick">Apply naming</Button>
             <CheckBox DockPanel.Dock="Top" Name="CbShowPreview">Show preview</CheckBox>
             <Image Name="ImgPreview" Margin="10" Stretch="Uniform" MaxHeight="300" />
         </DockPanel>
@@ -54,7 +55,7 @@
                 ItemsSource="{Binding}"
                 DataGridCell.Selected="DataGridCell_Selected" >
                 <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Header="-" Binding="{Binding ExcludeFromRenaming}"/>
+                    <DataGridCheckBoxColumn Header="-" Binding="{Binding IncludeInRenaming}"/>
                     <DataGridTextColumn Header="Filename" Binding="{Binding CurrentFilename}" IsReadOnly="True" />
                     <DataGridTextColumn Header="NewFilename" Binding="{Binding NewFilename}"  IsReadOnly="False">
                         <DataGridTextColumn.CellStyle>
@@ -87,13 +88,22 @@
             </DataGrid>
 
             <DockPanel Grid.Row="3" Height="60" Margin="10,10,10,10">
-                <TextBox DockPanel.Dock="Left" Name="TxtFillCustomField1" Width="150" Height="30" Text="" Margin="{StaticResource DefaultControlMargin}" Padding="{StaticResource DefaultControlPadding}" />
-                <Button DockPanel.Dock="Left" HorizontalAlignment="Right" Width="auto" Height="30" Margin="{StaticResource DefaultControlMargin}" Padding="8 4 8 4" Click="BtnCopyF1ToSelected_OnClick">Copy %F1</Button>
-                <TextBox DockPanel.Dock="Left" Name="TxtFillCopyright" Width="150" Height="30" Text="" Margin="{StaticResource DefaultControlMargin}" Padding="{StaticResource DefaultControlPadding}" />
-                <Button DockPanel.Dock="Left" HorizontalAlignment="Right" Width="auto" Height="30" Margin="{StaticResource DefaultControlMargin}" Padding="8 4 8 4" Click="BtnCopyCopyrightToSelected_OnClick">Set copyright</Button>
-                <TextBox DockPanel.Dock="Left" Name="TxtFillDateTaken" Width="150" Height="30" Text="" Margin="{StaticResource DefaultControlMargin}" Padding="{StaticResource DefaultControlPadding}" />
-                <Button DockPanel.Dock="Left" HorizontalAlignment="Right" Width="auto" Height="30" Margin="{StaticResource DefaultControlMargin}" Padding="8 4 8 4" Click="BtnCopyDateTakenToSelected_OnClick">Set yyyy:MM:dd HH:mm:ss</Button>
-                <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Width="auto" Height="30" Margin="{StaticResource DefaultControlMargin}" Padding="8 4 8 4" Click="BtnExecuteRenaming_OnClick">RENAME</Button>
+                <TextBox DockPanel.Dock="Left" Name="TxtFillCustomField1" Width="150" Height="30" Text="" Margin="{StaticResource DefaultNotLastControlMargin}" Padding="{StaticResource DefaultControlPadding}" />
+                <Button DockPanel.Dock="Left" HorizontalAlignment="Right" Width="auto" Height="30" Margin="{StaticResource DefaultNotLastControlMargin}" Padding="8 4 8 4" Click="BtnCopyF1ToSelected_OnClick">Copy %F1</Button>
+                <Button DockPanel.Dock="Left" HorizontalAlignment="Right" Width="auto" Height="30" Margin="{StaticResource DefaultSingleControlMargin}" Padding="8 4 8 4" Click="BtnCopyNameAsF1ToSelected_OnClick">Copy filename to %F1</Button>
+
+                <!--<TextBox DockPanel.Dock="Left" Name="TxtFillCopyright" Width="150" Height="30" Text="" Margin="{StaticResource DefaultNotLastControlMargin}" Padding="{StaticResource DefaultControlPadding}" />-->
+                <ComboBox DockPanel.Dock="Left" Name="ComboBoxCopyright" IsEditable="True" Width="150" Height="30" Margin="{StaticResource DefaultNotLastControlMargin}" Padding="{StaticResource DefaultControlPadding}">
+                    <ComboBoxItem IsSelected="True">Christof Mauersberger</ComboBoxItem>
+                    <ComboBoxItem>Miriam Hinze</ComboBoxItem>
+                    <ComboBoxItem>Eckhard Mauersberger</ComboBoxItem>
+                </ComboBox>
+                <Button DockPanel.Dock="Left" HorizontalAlignment="Right" Width="auto" Height="30" Margin="{StaticResource DefaultSingleControlMargin}" Padding="8 4 8 4" Click="BtnCopyCopyrightToSelected_OnClick">Set copyright</Button>
+                
+                <TextBox DockPanel.Dock="Left" Name="TxtFillDateTaken" Width="150" Height="30" Text="" Margin="{StaticResource DefaultNotLastControlMargin}" Padding="{StaticResource DefaultControlPadding}" />
+                <Button DockPanel.Dock="Left" HorizontalAlignment="Right" Width="auto" Height="30" Margin="{StaticResource DefaultSingleControlMargin}" Padding="8 4 8 4" Click="BtnCopyDateTakenToSelected_OnClick">Set yyyy:MM:dd HH:mm:ss</Button>
+                
+                <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Width="auto" Height="30" Margin="{StaticResource DefaultSingleControlMargin}" Padding="8 4 8 4" Click="BtnExecuteRenaming_OnClick">RENAME</Button>
             </DockPanel>
 
         </Grid>

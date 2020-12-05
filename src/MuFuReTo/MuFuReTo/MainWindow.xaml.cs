@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -71,12 +72,20 @@ namespace MuFuReTo
                 {
                     continue;
                 }
-                var oldPath = Path.Combine(mediaFile.FilePath, mediaFile.CurrentFilename);
-                var newPath = Path.Combine(mediaFile.FilePath, mediaFile.NewFilename);
-                var originalFilename = mediaFile.CurrentFilename;
-                mediaFile.CurrentFilename = mediaFile.NewFilename;
-                mediaFile.NewFilename = originalFilename;
-                File.Move(oldPath, newPath);
+
+                try
+                {
+                    var oldPath = Path.Combine(mediaFile.FilePath, mediaFile.CurrentFilename);
+                    var newPath = Path.Combine(mediaFile.FilePath, mediaFile.NewFilename);
+                    File.Move(oldPath, newPath);
+                    var originalFilename = mediaFile.CurrentFilename;
+                    mediaFile.CurrentFilename = mediaFile.NewFilename;
+                    mediaFile.NewFilename = originalFilename;
+                }
+                catch (Exception exception)
+                {
+                    mediaFile.ParsingRemarks += "Failed with renaming. Error: " + exception.Message;
+                }
             }
             DgImageFiles.Items.Refresh();
         }
@@ -154,7 +163,7 @@ namespace MuFuReTo
                 return;
             }
 
-            var copyright = TxtFillCopyright.Text;
+            var copyright = ComboBoxCopyright.Text;
 
             foreach (var mediaFileObject in mediaFiles)
             {
@@ -185,26 +194,55 @@ namespace MuFuReTo
                 return;
             }
 
+            // todo: add checkbox for adding x minutes for each picture
             // Example: "2020:05:12 12:24:59"
             var dateTakenString = TxtFillDateTaken.Text;
             var dateTaken = DateTime.ParseExact(dateTakenString, "yyyy:MM:dd HH:mm:ss", CultureInfo.InvariantCulture);
 
             foreach (var mediaFileObject in mediaFiles)
             {
-                // https://github.com/oozcitak/exiflibrary (writing exif data)
                 var mediaFile = (MediaFileMetaData)mediaFileObject;
-
-                if (mediaFile.FileType != FileTypeEnum.Jpg)
+                try
                 {
-                    continue;
-                }
+                    // https://github.com/oozcitak/exiflibrary (writing exif data)
 
-                var fullPath = Path.Combine(mediaFile.FilePath, mediaFile.CurrentFilename);
-                var file = ImageFile.FromFile(fullPath);
-                file.Properties.Set(ExifTag.DateTimeOriginal, dateTaken);
-                mediaFile.DateTakenString = dateTakenString;
-                mediaFile.DateTaken = dateTaken;
-                file.Save(fullPath);
+                    if (mediaFile.FileType != FileTypeEnum.Jpg)
+                    {
+                        continue;
+                    }
+
+                    var fullPath = Path.Combine(mediaFile.FilePath, mediaFile.CurrentFilename);
+                    var file = ImageFile.FromFile(fullPath);
+                    file.Properties.Set(ExifTag.DateTimeOriginal, dateTaken);
+                    file.Save(fullPath);
+                    mediaFile.DateTakenString = dateTakenString;
+                    mediaFile.DateTaken = dateTaken;
+                }
+                catch (Exception exception)
+                {
+                    mediaFile.ParsingRemarks += "Error writing date: " + exception.Message;
+                }
+            }
+
+            DgImageFiles.Items.Refresh();
+        }
+
+        private void BtnCopyNameAsF1ToSelected_OnClick(object sender, RoutedEventArgs e)
+        {
+            var mediaFiles = DgImageFiles.SelectedItems;
+
+            if (mediaFiles.Count < 1)
+            {
+                return;
+            }
+
+            // todo: without first word (as options?)
+            foreach (var mediaFile in mediaFiles)
+            {
+                var currentFilename = Path.GetFileNameWithoutExtension(((MediaFileMetaData)mediaFile).CurrentFilename);
+                var pattern = @"\(\d+\)$";
+                var output = Regex.Replace(currentFilename, pattern, " ");
+                ((MediaFileMetaData)mediaFile).CustomField1 = output;
             }
 
             DgImageFiles.Items.Refresh();
