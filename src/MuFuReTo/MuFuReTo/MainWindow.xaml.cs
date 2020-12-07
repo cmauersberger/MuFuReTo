@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -11,6 +12,7 @@ using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using ExifLibrary;
 using MuFuReTo.Code;
+using Image = System.Windows.Controls.Image;
 
 // todo: set exif author from custom field
 // todo: set exif date from filename/date picker
@@ -143,8 +145,10 @@ namespace MuFuReTo
                 BitmapImage bi = new BitmapImage();
                 bi.BeginInit();
                 bi.UriSource = new Uri(path);
-                bi.CacheOption = BitmapCacheOption.OnLoad; // This does the trick.
-                bi.EndInit();
+                bi.CacheOption = BitmapCacheOption.OnLoad; // This does the trick for file not being locked.
+                bi.DecodePixelWidth = 150; // reduce resolution, loads much faster. 12MB at full resolution take 700+ms, with 150 it's only 170ms.
+                bi.EndInit(); // this takes time
+
                 ImgPreview.Source = bi;
 
             }
