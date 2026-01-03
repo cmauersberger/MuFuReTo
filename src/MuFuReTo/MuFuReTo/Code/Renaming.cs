@@ -92,6 +92,12 @@ namespace MuFuReTo.Code
                 newFilename = newFilename.Replace("%F1", mediaFile.CustomField1);
             }
 
+            if (template.Contains("%FN"))
+            {
+                var currentFilenameNoExt = Path.GetFileNameWithoutExtension(mediaFile.CurrentFilename);
+                newFilename = newFilename.Replace("%FN", currentFilenameNoExt);
+            }
+
             if (template.Contains("%V"))
             {
                 var isVideo = mediaFile.FileType == FileTypeEnum.Mp4 || mediaFile.FileType == FileTypeEnum.Mov;

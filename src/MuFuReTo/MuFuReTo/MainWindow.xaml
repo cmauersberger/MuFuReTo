@@ -29,6 +29,7 @@
             <TextBox Name="TxtRenamingScheme" DockPanel.Dock="Top" Text="%Y-%M-%D__%C%V %F1" Margin="{StaticResource DefaultSingleControlMargin}" Padding="{StaticResource DefaultControlPadding}" />
             <!--<TextBlock Text="{Binding Path=Text, ElementName=TxtRenamingScheme}" DockPanel.Dock="Top" Margin="{StaticResource DefaultSingleControlMargin}" />-->
             <TextBlock Text="%Y-%M-%D__%C%V %F1" DockPanel.Dock="Top" Margin="{StaticResource DefaultSingleControlMargin}" />
+            <TextBlock Text="%FN - %F1" DockPanel.Dock="Top" Margin="{StaticResource DefaultSingleControlMargin}" />
 
             <TextBlock Text="Midnight Threshold" DockPanel.Dock="Top" Margin="{StaticResource DefaultNotLastControlMargin}" />
             <TextBox Name="TxtMidnightThreshold" DockPanel.Dock="Top" Text="4" Margin="{StaticResource DefaultSingleControlMargin}" />
