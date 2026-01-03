@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MuFuReTo"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="1400">
+        Title="MainWindow" Height="900" Width="1700">
     <Window.Resources>
         <CollectionViewSource x:Key="DgImageFilesDataSource"  CollectionViewType="ListCollectionView"/>
         <Thickness x:Key="DefaultSingleControlMargin" Left="16" Top="8" Right="16" Bottom="8" />
-        <Thickness x:Key="DefaultNotLastControlMargin" Left="16" Top="8" Right="0" Bottom="8" />
+        <Thickness x:Key="DefaultNotLastControlMargin" Left="16" Top="8" Right="0" Bottom="0" />
         <!--<Sys:Int x:Key="DefaultControlPadding">5</Sys:Int>-->
         <Thickness x:Key="DefaultControlPadding">5</Thickness>
     </Window.Resources>
@@ -26,9 +26,16 @@
 
         <DockPanel Name="LeftPanelGrid" Grid.Column="0" Grid.Row="0" Margin="10 10 10 10">
             <TextBlock DockPanel.Dock="Top" Margin="{StaticResource DefaultSingleControlMargin}">Renaming template:</TextBlock>
-            <TextBox Name="TxtRenamingScheme" DockPanel.Dock="Top" Text="%Y-%M-%D__%C%V" Margin="{StaticResource DefaultSingleControlMargin}" Padding="{StaticResource DefaultControlPadding}" />
+            <TextBox Name="TxtRenamingScheme" DockPanel.Dock="Top" Text="%Y-%M-%D__%C%V %F1" Margin="{StaticResource DefaultSingleControlMargin}" Padding="{StaticResource DefaultControlPadding}" />
             <!--<TextBlock Text="{Binding Path=Text, ElementName=TxtRenamingScheme}" DockPanel.Dock="Top" Margin="{StaticResource DefaultSingleControlMargin}" />-->
             <TextBlock Text="%Y-%M-%D__%C%V %F1" DockPanel.Dock="Top" Margin="{StaticResource DefaultSingleControlMargin}" />
+
+            <TextBlock Text="Midnight Threshold" DockPanel.Dock="Top" Margin="{StaticResource DefaultNotLastControlMargin}" />
+            <TextBox Name="TxtMidnightThreshold" DockPanel.Dock="Top" Text="4" Margin="{StaticResource DefaultSingleControlMargin}" />
+
+            <TextBlock Text="First counter" DockPanel.Dock="Top" Margin="{StaticResource DefaultNotLastControlMargin}" />
+            <TextBox Name="TxtFirstCounter" DockPanel.Dock="Top" Text="1" Margin="{StaticResource DefaultSingleControlMargin}" />
+
             <CheckBox DockPanel.Dock="Top" Name="CbIncludeFilesWithoutDate">Include files without date</CheckBox>
             <Button DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="{StaticResource DefaultSingleControlMargin}" Width="auto" Height="30" Padding="8 4 8 4" Name="BtnApplyNamingScheme" Click="BtnApplyNamingScheme_OnClick">Apply naming</Button>
             <CheckBox DockPanel.Dock="Top" Name="CbShowPreview">Show preview</CheckBox>

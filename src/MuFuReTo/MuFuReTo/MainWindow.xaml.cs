@@ -62,7 +62,18 @@ namespace MuFuReTo
 
         private void BtnApplyNamingScheme_OnClick(object sender, RoutedEventArgs e)
         {
-            Renaming.ApplyNamingTemplate(TxtRenamingScheme.Text, ImageFiles);
+            // todo: add number parsing box: https://stackoverflow.com/questions/1268552/how-do-i-get-a-textbox-to-only-accept-numeric-input-in-wpf
+
+            if (!int.TryParse(TxtMidnightThreshold.Text, out var midnightThreshold))
+            {
+                midnightThreshold = 0;
+            }
+
+            if (!int.TryParse(TxtFirstCounter.Text, out var firstCounter))
+            {
+                firstCounter = 1;
+            }
+            Renaming.ApplyNamingTemplate(TxtRenamingScheme.Text, ImageFiles, midnightThreshold, firstCounter);
             DgImageFiles.Items.Refresh();
         }
 
